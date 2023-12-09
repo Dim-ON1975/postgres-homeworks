@@ -1,7 +1,7 @@
 -- Напишите запросы, которые выводят следующую информацию:
 -- 1. заказы, отправленные в города, заканчивающиеся на 'burg'.
 --    Вывести без повторений две колонки (город, страна) (см. таблица orders, колонки ship_city, ship_country)
-SELECT ship_city, ship_country FROM orders
+SELECT DISTINCT ship_city, ship_country FROM orders
 WHERE ship_city LIKE '%burg'
 GROUP BY ship_city, ship_country
 
