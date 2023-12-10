@@ -49,3 +49,4 @@ where exists(
 	where od.quantity = 10
 	and pr.product_id = od.product_id
 )
+
