@@ -1,12 +1,26 @@
 -- Подключиться к БД Northwind и сделать следующие изменения:
 -- 1. Добавить ограничение на поле unit_price таблицы products (цена должна быть больше 0)
-
+alter table products add constraint chk_products_unit_price check (unit_price > 0);
 
 -- 2. Добавить ограничение, что поле discontinued таблицы products может содержать только значения 0 или 1
-
+alter table products add constraint chk_products_discontinued check (discontinued in (0, 1));
 
 -- 3. Создать новую таблицу, содержащую все продукты, снятые с продажи (discontinued = 1)
-
+SELECT * INTO disc_products FROM products WHERE discontinued = 1;
 
 -- 4. Удалить из products товары, снятые с продажи (discontinued = 1)
--- Для 4-го пункта может потребоваться удаление ограничения, связанного с foreign_key. Подумайте, как это можно решить, чтобы связь с таблицей order_details все же осталась.
+-- Для 4-го пункта может потребоваться удаление ограничения, связанного с foreign_key.
+-- Подумайте, как это можно решить, чтобы связь с таблицей order_details все же осталась.
+
+-- Удаление ограничения внешнего ключа
+ALTER TABLE order_details DROP CONSTRAINT fk_order_details_products;
+
+-- Удаление товаров, снятых с продажи в таблице products
+DELETE FROM products WHERE discontinued = 1;
+
+-- Удаление записей о товарах, снятых с продажи в таблице order_details
+DELETE FROM order_details WHERE product_id in (select product_id from disc_products);
+
+-- Установка внешнего ключа (отношение между данными в таблицах order_details и products)
+ALTER TABLE order_details ADD CONSTRAINT fk_order_details_products
+FOREIGN KEY(product_id) REFERENCES products(product_id);
